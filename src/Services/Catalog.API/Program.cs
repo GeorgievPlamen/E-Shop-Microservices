@@ -1,8 +1,12 @@
 using Catalog.API.Products.CreateProduct;
+using Catalog.API.Products.GetProducts;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCarter(null, config => config.WithModule<CreateProductEndpoint>());
+builder.Services.AddCarter(null, config => config.WithModules(
+    typeof(CreateProductEndpoint),
+    typeof(GetProductsEndpoint)));
+
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<Program>());
 builder.Services.AddMarten(options =>
 {
