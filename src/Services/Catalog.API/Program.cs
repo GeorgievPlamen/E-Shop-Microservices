@@ -2,6 +2,7 @@ using Catalog.API.Products.CreateProduct;
 using Catalog.API.Products.GetProductByCategory;
 using Catalog.API.Products.GetProductById;
 using Catalog.API.Products.GetProducts;
+using Catalog.API.Products.UpdateProduct;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddCarter(null, config => config.WithModules(
     typeof(CreateProductEndpoint),
     typeof(GetProductByIdEndpoint),
     typeof(GetProductByCategoryEndpoint),
+    typeof(UpdateProductEndpoint),
     typeof(GetProductsEndpoint)));
 
 builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<Program>());
