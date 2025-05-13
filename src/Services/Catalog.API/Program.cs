@@ -21,6 +21,7 @@ builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssemblyContaining<Program>();
     config.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+    config.AddOpenBehavior(typeof(LoggingBehaviour<,>));
 });
 builder.Services.AddMarten(options =>
 {
@@ -36,7 +37,7 @@ app.MapCarter();
 
 app.UseExceptionHandler(options =>
 {
-    
+
 });
 
 app.Run();
