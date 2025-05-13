@@ -1,12 +1,11 @@
 using BuildingBlocks.Behaviours;
+using BuildingBlocks.Exceptions.Handler;
 using Catalog.API.Products.CreateProduct;
 using Catalog.API.Products.DeleteProduct;
 using Catalog.API.Products.GetProductByCategory;
 using Catalog.API.Products.GetProductById;
 using Catalog.API.Products.GetProducts;
 using Catalog.API.Products.UpdateProduct;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,35 +28,15 @@ builder.Services.AddMarten(options =>
 }).UseLightweightSessions();
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
+builder.Services.AddExceptionHandler<CustomeExceptionHandler>();
+
 var app = builder.Build();
 
 app.MapCarter();
-app.UseExceptionHandler(exceptionHandlerApp =>
+
+app.UseExceptionHandler(options =>
 {
-    exceptionHandlerApp.Run(async context =>
-    {
-        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-
-        if (exception is null)
-        {
-            return;
-        }
-
-        var problemDetails = new ProblemDetails
-        {
-            Title = exception.Message,
-            Status = StatusCodes.Status500InternalServerError,
-            Detail = exception.StackTrace
-        };
-
-        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-        logger.LogError(exception, exception.Message);
-
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        context.Response.ContentType = "application/problem+json";
-
-        await context.Response.WriteAsJsonAsync(problemDetails);
-    });
+    
 });
 
 app.Run();
