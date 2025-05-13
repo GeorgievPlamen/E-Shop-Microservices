@@ -1,3 +1,4 @@
+using BuildingBlocks.Behaviours;
 using Catalog.API.Products.CreateProduct;
 using Catalog.API.Products.DeleteProduct;
 using Catalog.API.Products.GetProductByCategory;
@@ -15,7 +16,11 @@ builder.Services.AddCarter(null, config => config.WithModules(
     typeof(DeleteProductEndpoint),
     typeof(GetProductsEndpoint)));
 
-builder.Services.AddMediatR(config => config.RegisterServicesFromAssemblyContaining<Program>());
+builder.Services.AddMediatR(config =>
+{
+    config.RegisterServicesFromAssemblyContaining<Program>();
+    config.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+});
 builder.Services.AddMarten(options =>
 {
     options.Connection(builder.Configuration.GetConnectionString("Database")!);
