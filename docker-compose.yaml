@@ -1,4 +1,6 @@
 services:
+  basketdb:
+    image: postgres:latest
   catalogdb:
     image: postgres:latest
   catalog.api:
@@ -8,3 +10,4 @@ services:
       dockerfile: src/Services/Catalog.API/Dockerfile
 volumes:
   postgres_catalog:
+  postgres_basket:
