@@ -26,7 +26,7 @@ RUN dotnet publish "./src/Services/Discount.API/Discount.API.csproj" \
     -o /app/publish \
     /p:UseAppHost=false
 
-RUN dotnet dev-certs https
+RUN dotnet dev-certs https -ep %APPDATA%\.aspnet\https\aspnetapp.pfx -p password
 
 FROM base AS final
 WORKDIR /app

@@ -2,6 +2,7 @@ using Basket.API.Basket.DeleteBasket;
 using Basket.API.Basket.GetBasket;
 using Basket.API.Basket.StoreBasket;
 using Basket.API.Data;
+using Discount.Grpc;
 using Marten;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,11 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 
 builder.Services.AddHealthChecks();
+
+// builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+// {
+//     options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"]!);
+// });
 
 var app = builder.Build();
 
