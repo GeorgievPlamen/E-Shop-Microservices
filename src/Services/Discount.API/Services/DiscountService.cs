@@ -1,27 +1,69 @@
+using Discount.API.Data;
+using Discount.API.Models;
 using Discount.Grpc;
 using Grpc.Core;
+using Mapster;
+using Microsoft.EntityFrameworkCore;
 
 namespace Discount.API.Services;
 
-public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
+public class DiscountService(DiscountContext db) : DiscountProtoService.DiscountProtoServiceBase
 {
-    public override Task<CouponModel> GetDiscount(GetDiscountRequest request, ServerCallContext context)
+    public override async Task<CouponModel> GetDiscount(GetDiscountRequest request, ServerCallContext context)
     {
-        return base.GetDiscount(request, context);
+        var coupon = await db.Coupons.FirstOrDefaultAsync(x => x.ProductName == request.ProductName);
+
+        coupon ??= new Coupon
+        {
+            ProductName = "No Discount",
+            Amount = 0,
+            Description = "Not discount for this product"
+        };
+
+        return coupon.Adapt<CouponModel>();
     }
 
-    public override Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
+    public override async Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
     {
-        return base.CreateDiscount(request, context);
+        var coupon = new Coupon
+        {
+            Id = request.Coupon.Id,
+            ProductName = request.Coupon.ProductName,
+            Amount = request.Coupon.Amount,
+            Description = request.Coupon.Description,
+        };
+
+        db.Coupons.Add(coupon);
+        await db.SaveChangesAsync();
+
+        return coupon.Adapt<CouponModel>();
     }
 
-    public override Task<CouponModel> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
+    public override async Task<CouponModel> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
     {
-        return base.UpdateDiscount(request, context);
+        var coupon = new Coupon
+        {
+            Id = request.Coupon.Id,
+            ProductName = request.Coupon.ProductName,
+            Amount = request.Coupon.Amount,
+            Description = request.Coupon.Description,
+        };
+
+        db.Coupons.Update(coupon);
+        await db.SaveChangesAsync();
+
+        return coupon.Adapt<CouponModel>();
     }
 
-    public override Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
+    public override async Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
     {
-        return base.DeleteDiscount(request, context);
+        var coupon = await db.Coupons.FirstOrDefaultAsync(x => x.ProductName == request.ProductName);
+
+        ArgumentNullException.ThrowIfNull(coupon);
+
+        db.Coupons.Remove(coupon);
+        await db.SaveChangesAsync();
+
+        return new DeleteDiscountResponse { Success = true };
     }
 }
