@@ -1,5 +1,6 @@
 using Domain.Abstractions;
 using Domain.Enums;
+using Domain.Events;
 using Domain.ValueObjects;
 
 namespace Domain.Models;
