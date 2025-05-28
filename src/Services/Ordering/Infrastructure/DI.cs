@@ -1,3 +1,4 @@
+using Application.Data;
 using Infrastructure.Data;
 using Infrastructure.Data.Interceptors;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,8 @@ public static class DI
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
             options.UseSqlServer(connectionString);
         });
+
+        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
         // services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 

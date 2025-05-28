@@ -1,11 +1,11 @@
 using System.Reflection;
+using Application.Data;
 using Domain.Models;
-using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data;
 
-public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions options) : DbContext(options), IApplicationDbContext
 {
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Product> Products { get; set; }
