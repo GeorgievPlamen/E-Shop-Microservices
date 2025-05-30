@@ -4,12 +4,15 @@ using Basket.API.Basket.StoreBasket;
 using Basket.API.Data;
 using Discount.Grpc;
 using Marten;
+using BuildingBlocks.Messaging.MassTransit;
+using Basket.API.Basket.CheckoutBasket;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCarter(null, config => config.WithModules(
     typeof(GetBasketEndpoints),
     typeof(StoreBasketEndpoints),
+    typeof(CheckoutBasketEndpoint),
     typeof(DeleteBasketEndpoints)));
 
 builder.Services.AddMediatR(config =>
@@ -33,7 +36,9 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
 });
 
+builder.Services.AddMessageBroker(builder.Configuration);
 builder.Services.AddHealthChecks();
+
 
 // builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
 // {
